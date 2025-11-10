@@ -1,216 +1,420 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="hi">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Realtime Chat - Email Auth</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced EMI Calculator</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #0d1b2a;
-            color: white;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .container {
-            max-width: 600px;
-            margin: 30px auto;
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
-            background: #1b263b;
-            border-radius: 10px;
         }
 
-        h2 {
-            text-align: center;
+        .calculator-container {
+            display: flex;
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
 
-        input,
-        button {
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
+        .input-section {
+            flex: 1;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            padding: 40px;
+            color: white;
+        }
+
+        .result-section {
+            flex: 1;
+            padding: 40px;
+            background: white;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #00b4db, #0083b0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ecf0f1;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
             border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
         }
 
-        input {
-            width: calc(100% - 22px);
+        input:focus, select:focus {
+            outline: none;
+            border-color: #00b4db;
+            background: rgba(255, 255, 255, 0.15);
         }
 
-        button {
-            background: #00b4d8;
+        .value-display {
+            text-align: right;
+            font-size: 0.9em;
+            color: #bdc3c7;
+            margin-top: 5px;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #00b4db, #0083b0);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .emi-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .emi-amount {
+            font-size: 3em;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+
+        .emi-label {
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #00b4db;
+        }
+
+        .summary-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .summary-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .chart-container {
+            margin-top: 30px;
+        }
+
+        .pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: conic-gradient(
+                #00b4db 0% var(--principal-percent),
+                #e74c3c var(--principal-percent) 100%
+            );
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .chart-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .color-box {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+
+        .principal-color {
+            background: #00b4db;
+        }
+
+        .interest-color {
+            background: #e74c3c;
+        }
+
+        .quick-rates {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .rate-btn {
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
             color: white;
             cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
         }
 
-        button:hover {
-            background: #0096c7;
+        .rate-btn:hover {
+            background: rgba(0, 180, 219, 0.3);
+            border-color: #00b4db;
         }
 
-        #chat {
-            display: none;
+        .rate-btn.active {
+            background: #00b4db;
+            border-color: #00b4db;
         }
 
-        .message {
-            padding: 8px;
-            margin: 5px 0;
-            border-radius: 8px;
-            max-width: 70%;
-        }
-
-        .sent {
-            background: #00b4d8;
-            align-self: flex-end;
-        }
-
-        .received {
-            background: #415a77;
-            align-self: flex-start;
-        }
-
-        .msg-meta {
-            font-size: 0.7em;
-            opacity: 0.7;
-        }
-
-        #messages {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-bottom: 10px;
+        @media (max-width: 768px) {
+            .calculator-container {
+                flex-direction: column;
+            }
+            
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-rates {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
     </style>
 </head>
-
 <body>
-    <div class="container" id="auth">
-        <h2>Login / Sign Up</h2>
-        <input type="email" id="email" placeholder="Email" />
-        <input type="password" id="password" placeholder="Password" />
-        <button onclick="signUp()">Sign Up</button>
-        <button onclick="signIn()">Sign In</button>
+    <div class="calculator-container">
+        <!-- Left Side - Input Section -->
+        <div class="input-section">
+            <h1>EMI Calculator</h1>
+            
+            <div class="input-group">
+                <label for="loanAmount">Loan Amount (₹)</label>
+                <input type="number" id="loanAmount" value="500000" min="1000" step="1000">
+                <div class="value-display">₹5,00,000</div>
+            </div>
+
+            <div class="input-group">
+                <label for="interestRate">Interest Rate (%)</label>
+                <input type="number" id="interestRate" value="7.5" min="0.1" max="30" step="0.1" placeholder="Enter interest rate">
+                
+                <div class="quick-rates">
+                    <div class="rate-btn" data-rate="6.5">6.5%</div>
+                    <div class="rate-btn" data-rate="7.5">7.5%</div>
+                    <div class="rate-btn" data-rate="8.5">8.5%</div>
+                    <div class="rate-btn" data-rate="9.5">9.5%</div>
+                    <div class="rate-btn" data-rate="10.5">10.5%</div>
+                    <div class="rate-btn" data-rate="12.0">12.0%</div>
+                </div>
+                
+                <div class="value-display">7.5% per annum</div>
+            </div>
+
+            <div class="input-group">
+                <label for="loanTenure">Loan Tenure</label>
+                <input type="number" id="loanTenure" value="20" min="1" max="40">
+                <div class="value-display">20 Years</div>
+            </div>
+
+            <div class="input-group">
+                <label for="tenureType">Tenure Type</label>
+                <select id="tenureType">
+                    <option value="years">Years</option>
+                    <option value="months">Months</option>
+                </select>
+            </div>
+
+            <button class="calculate-btn" onclick="calculateEMI()">
+                Calculate EMI
+            </button>
+        </div>
+
+        <!-- Right Side - Result Section -->
+        <div class="result-section">
+            <div class="emi-display">
+                <div class="emi-label">Your Monthly EMI</div>
+                <div class="emi-amount" id="emiValue">₹ —</div>
+                <div style="color: #7f8c8d;">per month</div>
+            </div>
+
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="summary-value" id="totalInterest">₹ —</div>
+                    <div class="summary-label">Total Interest</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value" id="totalPayment">₹ —</div>
+                    <div class="summary-label">Total Payment</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value" id="loanDuration">—</div>
+                    <div class="summary-label">Loan Duration</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value" id="principalAmount">₹ —</div>
+                    <div class="summary-label">Principal Amount</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">
+                    Payment Breakdown
+                </h3>
+                <div class="pie-chart" id="pieChart"></div>
+                <div class="chart-labels">
+                    <div class="chart-label">
+                        <div class="color-box principal-color"></div>
+                        <span>Principal</span>
+                    </div>
+                    <div class="chart-label">
+                        <div class="color-box interest-color"></div>
+                        <span>Interest</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="container" id="chat">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2>Realtime Chat</h2>
-            <button onclick="signOut()">Sign out</button>
-        </div>
-        <p id="user-info"></p>
-        <div>
-            <input type="text" id="chatWith" placeholder="Enter friend's username" />
-            <button onclick="startChat()">Start Chat</button>
-        </div>
-        <div id="chatBox" style="display:none;">
-            <h3>Chat with: <span id="chatWithName"></span></h3>
-            <div id="messages"></div>
-            <input type="text" id="messageInput" placeholder="Type a message" />
-            <button onclick="sendMessage()">Send</button>
-        </div>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDE8zApy4owfoFlgrbB80LSCEVxRWAvqcc",
-            authDomain: "lalitapp-5cdf0.firebaseapp.com",
-            databaseURL: "https://lalitapp-5cdf0-default-rtdb.firebaseio.com",
-            projectId: "lalitapp-5cdf0",
-            storageBucket: "lalitapp-5cdf0.appspot.com",
-            messagingSenderId: "296397903515",
-            appId: "1:296397903515:web:efe85353eb8f548243d83e"
-        };
-
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
-        let currentUser = null;
-        let chatWith = null;
-        let unsubscribe = null;
-
-        function signUp() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            auth.createUserWithEmailAndPassword(email, password).catch(alert);
+        function formatCurrency(amount) {
+            return '₹' + new Intl.NumberFormat('en-IN').format(Math.round(amount));
         }
 
-        function signIn() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            auth.signInWithEmailAndPassword(email, password).catch(alert);
-        }
+        function calculateEMI() {
+            // Get input values
+            const P = parseFloat(document.getElementById('loanAmount').value);
+            const annualRate = parseFloat(document.getElementById('interestRate').value);
+            let n = parseFloat(document.getElementById('loanTenure').value);
+            const type = document.getElementById('tenureType').value;
 
-        function signOut() { auth.signOut(); }
-
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                // unique username: email local-part + uid substring
-                currentUser = user.email.split('@')[0] + "_" + user.uid.substring(0, 5);
-                document.getElementById('auth').style.display = 'none';
-                document.getElementById('chat').style.display = 'block';
-                document.getElementById('user-info').innerText = `You: ${currentUser} (${user.email})`;
-            } else {
-                document.getElementById('auth').style.display = 'block';
-                document.getElementById('chat').style.display = 'none';
-                currentUser = null;
-                if (unsubscribe) unsubscribe();
+            // Validate inputs
+            if (P <= 0 || annualRate <= 0 || n <= 0 || isNaN(P) || isNaN(annualRate) || isNaN(n)) {
+                alert('Please enter valid positive numbers for all fields.');
+                return;
             }
+
+            // Convert to months if years selected
+            if (type === 'years') {
+                n = n * 12;
+            }
+
+            const r = annualRate / 12 / 100;
+            
+            // Calculate EMI
+            let EMI = 0;
+            if (r > 0) {
+                EMI = P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+            } else {
+                EMI = P / n; // Zero interest case
+            }
+
+            const totalPayment = EMI * n;
+            const totalInterest = totalPayment - P;
+
+            // Update display
+            document.getElementById('emiValue').textContent = formatCurrency(EMI);
+            document.getElementById('totalInterest').textContent = formatCurrency(totalInterest);
+            document.getElementById('totalPayment').textContent = formatCurrency(totalPayment);
+            document.getElementById('principalAmount').textContent = formatCurrency(P);
+            document.getElementById('loanDuration').textContent = n + ' months';
+
+            // Update pie chart
+            const principalPercent = (P / totalPayment) * 100;
+            document.getElementById('pieChart').style.setProperty('--principal-percent', principalPercent + '%');
+
+            // Update value displays
+            document.querySelector('#loanAmount + .value-display').textContent = formatCurrency(P);
+            document.querySelector('#interestRate + .value-display').textContent = annualRate + '% per annum';
+            
+            if (type === 'years') {
+                document.querySelector('#loanTenure + .value-display').textContent = 
+                    (n / 12) + ' Years (' + n + ' months)';
+            } else {
+                document.querySelector('#loanTenure + .value-display').textContent = n + ' Months';
+            }
+        }
+
+        // Quick rate buttons functionality
+        document.querySelectorAll('.rate-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const rate = this.getAttribute('data-rate');
+                document.getElementById('interestRate').value = rate;
+                
+                // Update active state
+                document.querySelectorAll('.rate-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                calculateEMI();
+            });
         });
 
-        function startChat() {
-            chatWith = document.getElementById('chatWith').value.trim();
-            if (!chatWith) return alert('Enter a username to chat with');
-            document.getElementById('chatWithName').innerText = chatWith;
-            document.getElementById('chatBox').style.display = 'block';
-            loadMessages();
-        }
+        // Add event listeners for real-time updates
+        document.getElementById('loanAmount').addEventListener('input', calculateEMI);
+        document.getElementById('interestRate').addEventListener('input', function() {
+            // Remove active class from all rate buttons when typing manually
+            document.querySelectorAll('.rate-btn').forEach(b => b.classList.remove('active'));
+            calculateEMI();
+        });
+        document.getElementById('loanTenure').addEventListener('input', calculateEMI);
+        document.getElementById('tenureType').addEventListener('change', calculateEMI);
 
-        function loadMessages() {
-            if (unsubscribe) unsubscribe();
-            const roomId = [currentUser, chatWith].sort().join("_");
-            unsubscribe = db.collection('chats').doc(roomId).collection('messages')
-                .orderBy('timestamp')
-                .onSnapshot(snapshot => {
-                    const messagesDiv = document.getElementById('messages');
-                    messagesDiv.innerHTML = '';
-                    snapshot.forEach(doc => {
-                        const data = doc.data();
-                        const msgDiv = document.createElement('div');
-                        msgDiv.className = 'message ' + (data.sender === currentUser ? 'sent' : 'received');
-                        msgDiv.innerHTML = `<div>${data.text}</div><div class="msg-meta">${data.sender}</div>`;
-                        if (data.sender === currentUser) {
-                            const delBtn = document.createElement('button');
-                            delBtn.innerText = 'x';
-                            delBtn.style.marginLeft = '10px';
-                            delBtn.onclick = () => deleteMessage(roomId, doc.id);
-                            msgDiv.appendChild(delBtn);
-                        }
-                        messagesDiv.appendChild(msgDiv);
-                    });
-                });
-        }
+        // Set default active rate button
+        document.querySelector('.rate-btn[data-rate="7.5"]').classList.add('active');
 
-        function sendMessage() {
-            const msg = document.getElementById('messageInput').value;
-            if (!msg) return;
-            const roomId = [currentUser, chatWith].sort().join("_");
-            db.collection('chats').doc(roomId).collection('messages').add({
-                text: msg,
-                sender: currentUser,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            document.getElementById('messageInput').value = '';
-        }
-
-        function deleteMessage(roomId, msgId) {
-            db.collection('chats').doc(roomId).collection('messages').doc(msgId).delete();
-        }
+        // Calculate on page load
+        window.addEventListener('load', calculateEMI);
     </script>
 </body>
-
 </html>
